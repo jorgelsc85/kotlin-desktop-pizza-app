@@ -10,6 +10,7 @@ import java.sql.Connection
 // Define the Orders table representing orders in the database
 object Orders : Table() {
     private val id: Column<Int> = integer("id").autoIncrement()
+    val fullName: Column<String> = varchar("fullName", 200)
     val address: Column<String> = varchar("address", 200)
     val orderSummary: Column<String> = varchar("pizzas", 500)
     override val primaryKey = PrimaryKey(id, name = "order_id")
@@ -38,6 +39,7 @@ class OrderRepository {
     fun insertOrder(order: Order){
         transaction {
             Orders.insertIgnore {
+                it[fullName] = order.fullName
                 it[address] = order.address
                 it[orderSummary] = order.orderSummary
             }
@@ -47,6 +49,7 @@ class OrderRepository {
     // Convert a database row to an Order object
     private fun toOrder(row: ResultRow): Order =
         Order(
+            fullName = row[Orders.fullName],
             address = row[Orders.address],
             orderSummary = row[Orders.orderSummary]
         )

@@ -11,7 +11,7 @@ import repository.OrderRepository
 
 // Composable function to place an order for pizzas
 @Composable
-fun placeOrder(pizzas: List<Pizza>, address: String): String {
+fun placeOrder(pizzas: List<Pizza>, address: String, fullName: String): String {
     // Create an instance of OrderRepository using remember to retain state across recompositions
     val orderRepository = remember { OrderRepository() }
 
@@ -25,6 +25,7 @@ fun placeOrder(pizzas: List<Pizza>, address: String): String {
     // Insert the order into the database using OrderRepository
     orderRepository.insertOrder(
         Order(
+            fullName = fullName,
             address = address,
             orderSummary = orderSummary
         )
@@ -33,7 +34,9 @@ fun placeOrder(pizzas: List<Pizza>, address: String): String {
     // Build a string representing all orders in the database
     val orders = buildString {
         orderRepository.getAllOrders().forEachIndexed { index, order ->
-            appendLine("${index + 1}. ${order.address}")
+            appendLine("Order ${index + 1}.")
+            appendLine("Full Name: ${order.fullName}")
+            appendLine("Address: ${order.address}")
             appendLine(order.orderSummary)
         }
     }

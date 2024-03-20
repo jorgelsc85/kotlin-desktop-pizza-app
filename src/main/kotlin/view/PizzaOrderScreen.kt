@@ -1,6 +1,7 @@
 package view
 
 // Import necessary classes and functions from Jetpack Compose and the controller
+import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -14,9 +15,11 @@ import model.Pizza
 
 // Composable function representing the Pizza Order Screen
 @Composable
+@Preview
 fun PizzaOrderScreen() {
     // Mutable state variables to track address and result
     var address by remember { mutableStateOf("") }
+    var fullName by remember { mutableStateOf("") }
     var result by remember { mutableStateOf("") }
 
     // List of available pizzas
@@ -74,6 +77,14 @@ fun PizzaOrderScreen() {
                 }
             )
 
+            // TextField for entering full name
+            TextField(
+                value = fullName,
+                onValueChange = { fullName = it },
+                modifier = Modifier.padding(16.dp),
+                label = { Text("Enter your full name") }
+            )
+
             // TextField for entering address
             TextField(
                 value = address,
@@ -94,7 +105,7 @@ fun PizzaOrderScreen() {
             // Check if order needs to be placed
             if (runPlaceOrder) {
                 runPlaceOrder = false
-                result = PlaceOrder(pizzas = selectedPizzas, address = address)
+                result = PlaceOrder(pizzas = selectedPizzas, address = address, fullName = fullName)
             }
 
             // Display result if available
@@ -115,8 +126,8 @@ fun PizzaOrderScreen() {
 
 // Composable function to place the order
 @Composable
-private fun PlaceOrder(pizzas: List<Pizza>, address: String): String {
-    return placeOrder(pizzas, address)
+private fun PlaceOrder(pizzas: List<Pizza>, address: String, fullName: String): String {
+    return placeOrder(pizzas, address, fullName)
 }
 
 // Composable function representing a single pizza selection item
@@ -140,6 +151,6 @@ private fun PizzaSelectionItem(pizza: Pizza, onPizzaSelected: (Boolean) -> Unit)
             modifier = Modifier.padding(end = 8.dp)
         )
         // Text displaying the name of the pizza
-        Text(text = pizza.name)
+        Text(text = "${pizza.name}(${pizza.price} CHF)")
     }
 }
